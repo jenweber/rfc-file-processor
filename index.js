@@ -14,6 +14,7 @@
 13. Write code that catches errors
 14. Document your regex
 15. Detecting regx matches across line breaks is hard. Don't forget to do it.
+16. If you love this, you will REALLY love python
 */
 
 /*

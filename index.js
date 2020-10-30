@@ -12,6 +12,8 @@
 11. Document inputs and outputs
 12. Commit every time something new works
 13. Write code that catches errors
+14. Document your regex
+15. Detecting regx matches across line breaks is hard. Don't forget to do it.
 */
 
 /*
@@ -58,6 +60,23 @@ const readDate = (filename) => {
     return fileContents.match(/\d\d\d\d\-\d\d\-\d\d/)
 }
 
+const readRfcLink = (filename) => {
+    // example input 0408-decorators.md
+    // The format of the line we want data from is - RFC PR: https://github.com/emberjs/rfcs/pull/649
+    // output https://github.com/emberjs/rfcs/pull/649
+
+    let fileContents = fs.readFileSync(path.join('../rfcs/text', filename), 'utf8')
+    let matches = fileContents.match(/PR: (.*?)$/m)
+
+    if (!matches || matches.length < 2) {
+        console.log(filename + ' is missing a PR link')
+        return ''
+    } else {
+        // our matches are an array, and index 1 is the captured group between the parens
+        return matches[1]
+    }
+}
+
 
 fse.ensureFileSync(outputFile) // 'some/path/output.csv'
 
@@ -69,7 +88,8 @@ const results = fileList
         // output is 0408, 0408-decorators.md
         let rfcNumber = getRfcNumber(file)
         let startDate = readDate(file)
-        return `${rfcNumber}, ${file}, ${startDate}`
+        let rfcLink = readRfcLink(file)
+        return `${rfcNumber}, ${file}, ${startDate}, ${rfcLink}`
     })
     .join('\n')
 
